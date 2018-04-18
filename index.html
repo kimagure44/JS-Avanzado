@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css">
+    <title>Actividades en Madrid de los proximos 100 días</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <div id="container" v-cloak>
+        <header>
+            <div class="titulo">{{nombre}}</div>
+            <div class="buscador">
+                <input type="text" v-on:keyup="filtroTecladoCSS()" v-model="busqueda">
+                <select id="selectFiltroBusqueda">
+                    <option v-bind:value="index-1" v-for="(dato,index) in selectFiltro">{{dato}}</option>
+                </select>
+            </div>
+        </header>
+        <div>
+        </div>
+        <div class="flex-container">
+            <div v-if="resultado !== null" class="card zindex-2" v-for="(datos,index) in contenido" v-bind:key="'card-' + index" v-bind:id="'card-' + index">
+                <ul v-for="(attr, index2) in datos.atributos.atributo" v-bind:key="'attr-' + index2">
+                    <li v-bind:data-id="'card-' + index" v-bind:data-atributo="attr['@nombre'] + '|' + attr['$']" v-if="attr['@nombre'] !== 'LOCALIZACION' && attr['@nombre'] !== 'ID-EVENTO' && attr['@nombre'] !== 'TITULO-ACTIVIDAD' && attr['@nombre'] !== 'CONTENT-URL-ACTIVIDAD'">
+                        <div v-if="attr['@nombre'] === 'TITULO'" class="tituloCard">
+                            <div v-text="attr['$']" class="tituloEvento"></div>
+                            <div class="eventos">Evento {{index+1}} de {{totalRegistros}}</div>
+                        </div>
+                        <div v-else-if="attr['@nombre'] === 'GRATUITO'">
+                            <b class="formatoTexto" v-text="attr['$']==='1'?'Evento gratuito: ':'Evento NO gratuito: '"></b><i v-bind:class="['fas',{'fa-check':attr['$']==='1','fa-euro-sign':attr['$']==='0'}]"></i>
+                        </div>
+                        <div v-else-if="attr['@nombre'] === 'EVENTO-LARGA-DURACION'">
+                            <b class="formatoTexto">Evento de larga duración: </b>{{attr["$"]==="1"?"Evento que se desarrolla a lo largo del tiempo":"No"}}
+                        </div>
+                        <div v-else-if="attr['@nombre'] === 'FECHA-EVENTO'">
+                            <b class="formatoTexto">Fecha de inicio: </b>{{convertDate(attr["$"])}}
+                        </div>
+                        <div v-else-if="attr['@nombre'] === 'FECHA-FIN-EVENTO'">
+                            <b class="formatoTexto">Fecha fin: </b>{{convertDate(attr["$"])}}
+                        </div>
+                        <div v-else-if="attr['@nombre'] === 'HORA-EVENTO'">
+                            <b class="formatoTexto">Hora: </b>{{attr["$"]}}
+                        </div>
+                        <div v-else-if="attr['@nombre'] === 'CONTENT-URL'">
+                            <b class="formatoTexto">Web para inscribirse: </b><a v-bind:href="attr['$']" target="_blank">Accede a la ficha del evento</a>
+                        </div>
+                        <div v-else-if="attr['@nombre'] === 'DESCRIPCION'">
+                            <b class="formatoTexto">Descripción: </b>{{attr["$"]}}
+                        </div>
+                        <div v-else-if="attr['@nombre'] === 'TIPO'">
+                            <b class="formatoTexto">Tipo de actividad: </b>{{attr["$"]}}
+                        </div>
+                        <div v-else-if="attr['@nombre'] === 'AUDIENCIA'">
+                            <b class="formatoTexto">Audiencia: </b>{{attr["$"]}}
+                        </div>
+                    </li>
+                    <li v-bind:data-id="'card-' + index" v-if="attr['@nombre'] === 'LOCALIZACION'" class="localizacion">
+                        <ul v-for="(loc, index3) in attr.atributo" v-bind:key="'localiza-' + index3">
+                            <li v-bind:data-id="'card-' + index" v-bind:data-subatributo="loc['@nombre'] +'|' + loc['$']" v-if="loc['@nombre'] !== 'CONTENT-URL-INSTALACION' && loc['@nombre'] !== 'ID-INSTALACION' && loc['@nombre'] !=='COORDENADA-X' && loc['@nombre'] !=='COORDENADA-Y'">
+                                <div v-if="loc['@nombre'] === 'NOMBRE-INSTALACION'">
+                                    <b class="formatoTexto">Nombre de la instalación: </b>{{loc["$"]}}
+                                </div>
+                                <div v-else-if="loc['@nombre'] === 'LATITUD'">
+                                    <b class="formatoTexto">Abrir mapa: </b><span v-on:click="verMapa(attr.atributo[5]['$'],attr.atributo[6]['$'],datos.atributos.atributo[1])">Ver</span>
+                                </div>
+                                <div v-else-if="loc['@nombre'] === 'LOCALIDAD'">
+                                    <b class="formatoTexto">Localidad: </b>{{loc["$"]}}
+                                </div>
+                                <div v-else-if="loc['@nombre'] === 'PROVINCIA'">
+                                    <b class="formatoTexto">Provincia: </b>{{loc["$"]}}
+                                </div>
+                                <div v-else-if="loc['@nombre'] === 'DISTRITO'">
+                                    <b class="formatoTexto">Distrito: </b>{{loc["$"]}}
+                                </div>
+                                <div v-else-if="loc['@nombre'] === 'TIPO'">
+                                    <b class="formatoTexto">Tipo de actividad: </b>{{loc["$"]}}
+                                </div>
+                                <div v-else-if="loc['@nombre'] === 'AUDIENCIA'">
+                                    <b class="formatoTexto">Audiencia: </b>{{loc["$"]}}
+                                </div>
+                                <div v-else-if="loc['@nombre'] !== 'LONGITUD'">
+                                    <b>{{loc["@nombre"]}}:</b>{{loc["$"]}}
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <loading-data v-bind:show="showLoading"></loading-data>
+        <modal-mapa v-bind:title="this.$store.getters.getTitleModalMap"></modal-mapa>
+    </div>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/http-vue-loader"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vuex/3.0.1/vuex.min.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAP353XqzSRqXEP4BjgUqgltj9gHOJ4PS4"></script>
+    <script src="./index.js"></script>
+</body>
+
+</html>
