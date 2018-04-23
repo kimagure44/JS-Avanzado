@@ -174,7 +174,17 @@ ul li div span {
     opacity: 0;
 }
 
-@media all and (max-width:599px) {
+@media all and (max-width:499px) {
+    header .buscador input,
+    header .buscador select {
+        width: 100%;
+    }
+    #container {
+        margin-top: 125px;
+    }
+}
+
+@media all and (max-width:500px) {
     .card {
         width: 100%;
     }
@@ -183,11 +193,17 @@ ul li div span {
         padding-bottom: 10px;
     }
     #container {
-        margin-top: 80px;
+        margin-top: 100px;
     }
 }
 
-@media all and (min-width:600px) and (max-width:991px) {
+@media all and (min-width:600px) and (max-width:749px) {
+    #container {
+        margin-top: 100px;
+    }
+}
+
+@media all and (min-width:750px) and (max-width:991px) {
     .card {
         width: 100%;
     }
