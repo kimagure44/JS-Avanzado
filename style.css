@@ -182,6 +182,9 @@ ul li div span {
     #container {
         margin-top: 125px;
     }
+    .buscador {
+        float: left;
+    }
 }
 
 @media all and (max-width:500px) {
@@ -195,11 +198,18 @@ ul li div span {
     #container {
         margin-top: 100px;
     }
+    .buscador {
+        float: left;
+    }
 }
 
 @media all and (min-width:600px) and (max-width:749px) {
     #container {
-        margin-top: 100px;
+        margin-top: 80px;
+    }
+    .buscador {
+        float: left;
+        padding-top: 5px;
     }
 }
 
@@ -214,6 +224,9 @@ ul li div span {
     #container {
         margin-top: 80px;
     }
+    .buscador {
+        float: left;
+    }
 }
 
 @media all and (min-width:992px) and (max-width:1199px) {
@@ -226,6 +239,9 @@ ul li div span {
     }
     #container {
         margin-top: 80px;
+    }
+    .buscador {
+        float: left;
     }
 }
 
